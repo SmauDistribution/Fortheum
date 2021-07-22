@@ -1,0 +1,176 @@
+<html>
+<head>
+    <title>MyProfile</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main/style.css' %}" type="text/css" />
+</head>
+    <body onresize="ShowMenu(true)">
+
+        {% if messages %}
+            {% for mess in messages %}
+                <script>alert("{{mess}}")</script>
+            {% endfor %}
+        {% endif %}
+
+        <div class="ProfilePanel">
+            <div class="ProfileTitle">
+                <section class="container" onclick="ShowMenu()">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                <section>
+                <span>Welcome {{user.username}}</span>
+            </div>
+
+            <ul id="menu" class="ProfileList">
+                <li><a href="/">Home</a></li>
+                <li><a onclick="ShowContent('discussion')" href="#">My Discussions</a></li>
+                <li><a onclick="ShowContent('accinfo')" href="#">Account Info</a></li>
+                <li><a href="/logout">Log-out</a></li>
+            </ul>
+            <div></div>
+            <!-- DISCUSSION FORM -->
+            <div id="DiscussionFormContent" class="DiscussionFormStyle">
+                <div class="DiscussionFormTitle">
+                    <span id="DiscussionFormTitle"></span>
+                    <button onclick="CloseDiscussionForm()">X</button>
+                </div>                
+                <form id="DiscussionForm" method="POST">
+                    {% csrf_token %}
+                    <p>
+                        <label>Title:</label>
+                        <br>
+                        <input id="DiscussionTitle" maxlength="50" autocomplete="off" name="title" type="text">
+                    </p>
+                    <p>
+                        <label>Content:</label>
+                        <br>
+                        <textarea id="DiscussionContent" name="description" ></textarea>
+                    </p>
+                    <input id="DiscussionFormBtn" type="submit">
+                </form>
+            </div>
+            <!-- DISCUSSIONS -->
+            <div id="discussion" name="content-element" class="ProfileContent">
+                <h3>Your discussions:</h3>
+                <a href="#" onclick="OpenDiscussionForm(null)">Open a new discussion</a>
+                {% for dis in discussions %}
+                    <ul>
+                        <li>
+                            <a href="/discussion/{{dis.title}}">♢ {{dis}}</a>
+                            <button class="DeleteButton" onclick="Delete('{{dis.title}}')">Delete</button>
+                            <button class="EditButton" onclick="OpenDiscussionForm('{{dis.title}}','{{dis.description}}')">Edit</button>
+                        </li>
+                    </ul>
+                    <hr>
+                {% endfor %}
+            </div>
+            <!----------------->
+            <!-- ACCOUNT INFO -->
+            <div id="accinfo" name="content-element" class="ProfileContent AuthPanel">
+                <form method="POST" action="\editprofile">
+                    {% csrf_token %}
+                    <p>
+                        <label>Username:</label>
+                        <input name="username" autocomplete="off" type="text" value="{{user.username}}">
+                    </p>
+                    <p>
+                        <label>Firstname:</label>
+                        <input name="first-name" autocomplete="off" type="text" value="{{user.first_name}}">
+                    </p>
+                    <p>
+                        <label>Surname:</label>
+                        <input name="last-name" autocomplete="off" type="text" value="{{user.last_name}}">
+                    </p>
+                    <a href="#" onclick="ShowContent('change-password')">Change password</a>
+                    <input type="submit" value="Save">
+                </form>
+            </div>
+            <!------------------>
+            <!-- CHANGE PASSWORD -->
+            <div id="change-password" name="content-element" class="ProfileContent AuthPanel">
+                <form method="POST" action="\editcredentials">
+                    {% csrf_token %}
+                    <p>
+                        <label>New Password:</label>
+                        <input name="password" autocomplete="off" type="password">
+                    </p>
+                    <p>
+                        <label>Confirm Password:</label>
+                        <input name="confirm-password" autocomplete="off" type="password">
+                    </p>
+                    <input type="submit" value="Save">
+                </form>
+            </div>
+            <!--------------------->
+        </div>
+    </body>
+
+    <script>
+        //Show the default content
+        ShowContent("discussion");
+        ShowMenu();
+
+        function ShowContent(id){
+            CloseDiscussionForm();
+            document.getElementsByName("content-element").forEach(el =>{
+                el.style.display = "none";
+            })
+            var el = document.getElementById(id);
+            el.style.display = "block";
+        }
+
+        function OpenDiscussionForm(title, content){
+            document.getElementById("DiscussionFormContent").style.display = "block";
+            var wTitle = document.getElementById("DiscussionFormTitle");
+            var ConfirmBtn = document.getElementById("DiscussionFormBtn");
+            var form = document.getElementById("DiscussionForm");
+
+            var DiscussionTitle = document.getElementById("DiscussionTitle"); //Input
+            var DiscussionContent = document.getElementById("DiscussionContent"); //AreaText
+
+            if(title != null && content != null){
+                //Set Actual Discussion Data
+                DiscussionTitle.value = title;
+                DiscussionContent.innerText = content;
+
+                //Set Window Properties
+                wTitle.innerText = "Edit Discussion";
+                ConfirmBtn.value = "Edit";
+                form.action = "/editdiscussion/" + title;
+            }
+            else{
+                //Set Actual Discussion Data
+                DiscussionTitle.value = "";
+                DiscussionContent.innerText = "";
+
+                //Set Window Properties
+                wTitle.innerText = "New Discussion";
+                ConfirmBtn.value = "Open";
+                form.action = "/newdiscussion";
+            }
+        }
+
+        function CloseDiscussionForm(){
+            document.getElementById("DiscussionFormContent").style.display = "none";
+        }
+
+        function Delete(title){
+            var res = confirm("Are you sure you want to cancel this discussion?");
+            if(res) window.location.href = "/deletediscussion/" + title;
+        }
+
+        function ShowMenu(isResizing){
+            var menu = document.getElementById("menu");
+            if(window.matchMedia("(max-width: 800px)").matches == true)
+            {
+                if(menu.style.display == "none" && !isResizing)
+                    menu.style.display = "block";
+                else
+                    menu.style.display = "none";
+            }
+            else menu.style.display = "block";
+        }
+    </script>
+
+</html>

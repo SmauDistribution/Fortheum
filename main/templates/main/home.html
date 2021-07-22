@@ -1,0 +1,18 @@
+{% extends "main/header.html" %}
+{% block content%}
+    {% for dis in discussions %}
+        <div onclick="ShowDiscussion('{{dis.title}}')" class="List-Element">
+            <h2>{{dis.title}}</h2>
+            <p>Author: {{dis.author}}</p>
+        </div>
+    {% endfor %}
+
+    {% if user.is_authenticated == False %}
+        <!-- INFO -->
+        <div id="info" class="InfoContainer">
+            <button onclick="CloseInfo()">X</button>
+            <h3>Info</h3>
+            <span>Read the <a href="/rules">rules</a> before using Fortheum!</span>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "main/header.html" %}
+{% block content %}
+<div class="Discussion">
+    <!-- First Discussion -->
+    <h1>{{"♦ "|add:discussion.title}}</h1>
+    <hr>
+    <br>
+    <p style="color: gray; margin: 0px">{{"♛ "}}<i>{{discussion.author.username}}</i></p>
+    <p>{{discussion.description}}</p>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <!-- Comments -->
+    <h4>{{comments.count}} Comments</h4>
+    <a onclick="ShowCommentField()">New Comment</a>
+    <div id="CommentField" class="CommentField">
+        <form method="POST" action="\newmessage">
+            {% csrf_token %}
+            <input name="discussion" type="hidden" value="{{discussion.title}}">
+            <input name="comment" type="text" placeholder="Write a comment">
+            <input type="submit" value="Send"> 
+        </form>
+    </div>
+    <br>
+    <br>
+
+    <!-- LOAD COMMENTS -->
+    {% for comment in comments %}
+        <div class="Comment">
+            <hr>
+            <br>
+            <p style="color: gray; margin: 0px">{{"♣ "}}<i>{{comment.author}}</i></p>
+            <p>{{comment.comment}}</p>
+        </div>
+        <br>
+    {% endfor %}
+</div>
+{% endblock %}

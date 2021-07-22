@@ -1,0 +1,39 @@
+{% extends "main/header.html" %}
+{% block content %}
+<form autocomplete="off" method="POST">
+    {% csrf_token %}
+    <div class="AuthPanel">
+            <center>
+                <p>
+                    <label for="id_username">Username:</label>
+                    <input type="text" name="username" onmouseover="ShowAuthHelp('user', '')" onmouseout="ShowAuthHelp('user', 'hidden')" maxlength="150" autofocus="" required="" id="id_username">
+                    <div id="user" class="AuthHelp">
+                        <span class="helptext">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+                    </div>
+                </p>
+                <p>
+                    <label for="id_password1">Password:</label>
+                    <input type="password" name="password1" onmouseover="ShowAuthHelp('passrequire', '')" onmouseout="ShowAuthHelp('passrequire', 'hidden')" required="" id="id_password1">
+                    <span class="helptext"></span>
+                </p>
+                <div id="passrequire" class="AuthHelp">
+                    <p><span>Your password can't be too similar to your other personal information.</span></p>
+                    <p><span>Your password must contain at least 8 characters.</span></p>
+                    <p><span>Your password can't be a commonly used password.</span></p>
+                    <p><span>Your password can't be entirely numeric.</span></p>
+                </div>
+                <p></p>
+                <p>
+                    <label for="id_password2">Password confirmation:</label>
+                    <input type="password" name="password2" onmouseover="ShowAuthHelp('passver', '')" onmouseout="ShowAuthHelp('passver', 'hidden')" required="" id="id_password2">
+                    <div id="passver" class="AuthHelp">
+                        <span class="helptext">Enter the same password as before, for verification.</span>
+                    </div>
+                </p>
+                <p><span>Read the <a href="/rules">policy and the privacy</a> before signing up!</span></p>
+                <p><input type="submit" value="Register"></p>
+            </center>
+        </div>
+</form>
+<br>
+{% endblock %}

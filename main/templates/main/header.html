@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <title>Fortheum</title>
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'main/style.css' %}" type="text/css" />
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li style="float: left"><a class="active" href="/">Fortheum</a></li>
+                {% if user.is_authenticated %}
+                    <li><a class="ignore-userlink" href="/profile">{{user.username}}</a></li>
+                {% else %}
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/login">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <div class="Content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+
+    <script>
+        ShowCommentField();
+        
+        function ShowDiscussion(id){
+            window.location.href = "/discussion/" + id;
+        }
+
+        function ShowCommentField(){
+            var commentField = document.getElementById("CommentField");
+            if(commentField.style.visibility == "hidden")
+                commentField.style.visibility = "visible";
+            else
+                commentField.style.visibility = "hidden";
+        }
+
+        function ShowAuthHelp(id, status)
+        {
+            var el = document.getElementById(id);
+            if(status != "hidden"){
+                el.style.display = "block";
+            }
+            else{
+                el.style.display = "none";
+            }
+        }
+
+        function CloseInfo(){
+            document.getElementById("info").style.display = "none";
+        }
+    </script>
